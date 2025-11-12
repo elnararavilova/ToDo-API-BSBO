@@ -68,3 +68,4 @@ class TaskResponse(TaskBase):
         description="Дата и время создания задачи") 
     class Config:    # Config класс для работы с ORM (понадобится посде подключения СУБД) 
         from_attributes = True
+        

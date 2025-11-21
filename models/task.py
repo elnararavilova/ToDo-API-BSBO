@@ -8,25 +8,25 @@ class Task(Base):
 
     id = Column(
         Integer,
-        primary_key=True,       
-        index=True,             
-        autoincrement=True      
+        primary_key=True,
+        index=True,
+        autoincrement=True
     )
 
     title = Column(
-        Text,                   
-        nullable=False           
+        Text,
+        nullable=False
     )
 
     description = Column(
         Text,
-        nullable=True            
+        nullable=True
     )
 
     is_important = Column(
         Boolean,
         nullable=False,
-        default=False             
+        default=False
     )
 
     is_urgent = Column(
@@ -36,7 +36,7 @@ class Task(Base):
     )
 
     quadrant = Column(
-        String(2),                
+        String(2),
         nullable=False
     )
 
@@ -47,28 +47,18 @@ class Task(Base):
     )
 
     created_at = Column(
-        DateTime(timezone=True),  
-        server_default=func.now(),  
+        DateTime(timezone=True),
+        server_default=func.now(),
         nullable=False
     )
 
     completed_at = Column(
         DateTime(timezone=True),
-        nullable=True             
+        nullable=True
     )
 
-    def __repr__(self) -> str:
-        return f"<Task(id={self.id}, title='{self.title}', quadrant='{self.quadrant}')>"
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "is_important": self.is_important,
-            "is_urgent": self.is_urgent,
-            "quadrant": self.quadrant,
-            "completed": self.completed,
-            "created_at": self.created_at,
-            "completed_at": self.completed_at
-        }
+    # Новый столбец: дедлайн
+    deadline_at = Column(
+        DateTime(timezone=True),
+        nullable=False
+    )

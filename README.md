@@ -20,13 +20,14 @@
 - `GET /tasks/quadrant/{quadrant}` — фильтр по Q1–Q4  
 - `GET /tasks/status/{status}` — completed / pending  
 - `GET /tasks/search?q=` — поиск  
-- `POST /tasks` — создание  
-- `PUT /tasks/{task_id}` — обновление  
+- `POST /tasks` — создание (передаются важность и дедлайн, срочность и квадрант считаются автоматически)
+- `PUT /tasks/{task_id}` — обновление (при изменении важности или дедлайна пересчитываются срочность и квадрант) 
 - `PATCH /tasks/{task_id}/complete` — отметить выполненной  
 - `DELETE /tasks/{task_id}` — удалить  
 
 ### Статистика (`/api/v2/stats`)
 - `GET /stats` — общее количество, по квадрантам и по статусам
+- `GET /stats/deadlines` — невыполненные задачи с дедлайнами и количеством дней до дедлайна
 
 ## Запуск проекта
 

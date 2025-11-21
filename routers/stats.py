@@ -1,36 +1,36 @@
-from fastapi import APIRouter
-from database import tasks_db
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from models import Task
+from database import get_async_session
 
 router = APIRouter(
-    prefix="/stats",           # все endpoints начнутся с /stats
-    tags=["stats"],            # группировка в Swagger UI
-    responses={404: {"description": "Stats not found"}},
+    prefix="/stats",
+    tags=["statistics"]
 )
 
-@router.get("")
-async def get_tasks_stats() -> dict:
-    # Общее количество задач
-    total_tasks = len(tasks_db)
 
-    # Количество задач по квадрантам
-    by_quadrant = {
-        "Q1": len([task for task in tasks_db if task["quadrant"] == "Q1"]),
-        "Q2": len([task for task in tasks_db if task["quadrant"] == "Q2"]),
-        "Q3": len([task for task in tasks_db if task["quadrant"] == "Q3"]),
-        "Q4": len([task for task in tasks_db if task["quadrant"] == "Q4"]),
-    }
+@router.get("/", response_model=dict)
+async def get_tasks_stats(
+    db: AsyncSession = Depends(get_async_session)
+) -> dict:
+    result = await db.execute(select(Task))
+    tasks = result.scalars().all()
 
-    # Количество задач по статусу выполнения
-    completed_tasks = len([task for task in tasks_db if task["completed"]])
-    pending_tasks = len([task for task in tasks_db if not task["completed"]])
+    total_tasks = len(tasks)
+    by_quadrant = {"Q1": 0, "Q2": 0, "Q3": 0, "Q4": 0}
+    by_status = {"completed": 0, "pending": 0}
 
-    by_status = {
-        "completed": completed_tasks,
-        "pending": pending_tasks,
-    }
+    for task in tasks:
+        if task.quadrant in by_quadrant:
+            by_quadrant[task.quadrant] += 1
+        if task.completed:
+            by_status["completed"] += 1
+        else:
+            by_status["pending"] += 1
 
     return {
         "total_tasks": total_tasks,
         "by_quadrant": by_quadrant,
-        "by_status": by_status,
+        "by_status": by_status
     }

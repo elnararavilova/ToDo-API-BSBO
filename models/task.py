@@ -8,25 +8,25 @@ class Task(Base):
 
     id = Column(
         Integer,
-        primary_key=True,  # Первичный ключ
-        index=True,        # Создать индекс для быстрого поиска
-        autoincrement=True # Автоматическая генерация
+        primary_key=True,       
+        index=True,             
+        autoincrement=True      
     )
 
     title = Column(
-        Text,              # Text = текст неограниченной длины
-        nullable=False     # Не может быть NULL
+        Text,                   
+        nullable=False           
     )
 
     description = Column(
         Text,
-        nullable=True       # Может быть NULL
+        nullable=True            
     )
 
     is_important = Column(
         Boolean,
         nullable=False,
-        default=False        # По умолчанию False
+        default=False             
     )
 
     is_urgent = Column(
@@ -36,7 +36,7 @@ class Task(Base):
     )
 
     quadrant = Column(
-        String(2),           # Максимум 2 символа: "Q1", "Q2", "Q3", "Q4"
+        String(2),                
         nullable=False
     )
 
@@ -47,14 +47,14 @@ class Task(Base):
     )
 
     created_at = Column(
-        DateTime(timezone=True),   # С поддержкой часовых поясов
-        server_default=func.now(), # Автоматически текущее время
+        DateTime(timezone=True),  
+        server_default=func.now(),  
         nullable=False
     )
 
     completed_at = Column(
         DateTime(timezone=True),
-        nullable=True              # NULL пока задача не завершена
+        nullable=True             
     )
 
     def __repr__(self) -> str:
@@ -70,5 +70,5 @@ class Task(Base):
             "quadrant": self.quadrant,
             "completed": self.completed,
             "created_at": self.created_at,
-            "completed_at": self.completed_at,
+            "completed_at": self.completed_at
         }

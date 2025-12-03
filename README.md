@@ -7,6 +7,7 @@
 - Python  
 - PostgreSQL (Supabase)  
 - SQLAlchemy (async)
+- APScheduler (планировщик фоновых задач)
 
 ## Эндпоинты
 
@@ -19,7 +20,8 @@
 - `GET /tasks/{task_id}` — задача по ID  
 - `GET /tasks/quadrant/{quadrant}` — фильтр по Q1–Q4  
 - `GET /tasks/status/{status}` — completed / pending  
-- `GET /tasks/search?q=` — поиск  
+- `GET /tasks/search?q=` — поиск
+- `GET /tasks/today` — задачи, срок которых истекает сегодня 
 - `POST /tasks` — создание (передаются важность и дедлайн, срочность и квадрант считаются автоматически)
 - `PUT /tasks/{task_id}` — обновление (при изменении важности или дедлайна пересчитываются срочность и квадрант) 
 - `PATCH /tasks/{task_id}/complete` — отметить выполненной  
@@ -28,6 +30,8 @@
 ### Статистика (`/api/v2/stats`)
 - `GET /stats` — общее количество, по квадрантам и по статусам
 - `GET /stats/deadlines` — невыполненные задачи с дедлайнами и количеством дней до дедлайна
+- `GET /stats/timing` — агрегированная статистика по срокам (вовремя / с опозданием / в работе / просрочены)
+
 
 ## Запуск проекта
 

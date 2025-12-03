@@ -13,7 +13,16 @@
 
 ### Основные
 - `GET /` — информация о приложении  
-- `GET /health` — состояние API и БД  
+- `GET /health` — состояние API и БД
+
+### Авторизация (`/api/v2/auth`)
+- `POST /auth/register` — регистрация пользователя
+- `POST /auth/login` — вход (JWT токен)
+- `PATCH /auth/change-password` — смена пароля 
+- `GET /auth/me` — текущий пользователь
+
+### Администрирование (`/api/v2/auth/admin`)
+- `GET /admin/users` — список всех пользователей с количеством их задач (только для админа)
 
 ### Задачи (`/api/v2/tasks`)
 - `GET /tasks` — список задач  
@@ -40,6 +49,7 @@ pip install -r requirements.txt
 
 ### 2. Создать файл `.env`:
 DATABASE_URL=postgresql+asyncpg://postgres:<password>@db.<project>.supabase.co:5432/postgres?sslmode=require
+SECRET_KEY = 'ваш_ключ'
 
 ### 3. Запустить сервер:
 uvicorn main:app --reload

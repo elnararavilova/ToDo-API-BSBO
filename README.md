@@ -87,12 +87,21 @@
 
 ## Установка и запуск
 
-### 1. Установка зависимостей
+### 1. Создание виртуального окружения
+
+Перед установкой зависимостей рекомендуется создать и активировать виртуальное окружение.
+
+```bash
+python -m venv venv
+source venv/Scripts/activate
+```
+
+### 2. Установка зависимостей
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Переменные окружения (.env)
+### 3. Переменные окружения (.env)
 ```env
 DATABASE_URL=postgresql+asyncpg://postgres:<password>@db.<project>.supabase.co:5432/postgres?sslmode=require
 SECRET_KEY=your_secret_key
@@ -100,7 +109,7 @@ BOT_TOKEN=telegram_bot_token
 API_BASE_URL=http://127.0.0.1:8000
 ```
 
-### 3. Запуск API и Telegram bot
+### 4. Запуск API и Telegram bot
 ```bash
 uvicorn main:app
 ```

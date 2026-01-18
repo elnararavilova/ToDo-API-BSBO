@@ -1,62 +1,114 @@
 # ToDo API — матрица Эйзенхауэра
 
-- REST API для управления задачами с классификацией по матрице Эйзенхауэра.
+Проект представляет собой **REST API для управления задачами** с автоматической классификацией по **матрице Эйзенхауэра (Q1–Q4)** и **Telegram-бот** в роли пользовательского интерфейса для работы с API.
+
+- **API**: FastAPI + PostgreSQL (Supabase) + SQLAlchemy Async  
+- **UI**: Telegram Bot (aiogram)  
+- **Логика матрицы**: срочность вычисляется по дедлайну, квадрант определяется автоматически на основе важности и срочности.
+
+---
+
+## Возможности
+
+### API
+- Регистрация и вход (JWT)
+- CRUD задач (создание / просмотр / обновление / удаление)
+- Автоматическое вычисление:
+  - `is_urgent` (срочность)
+  - `quadrant` (Q1–Q4)
+  - `days_until_deadline` (сколько дней до дедлайна)
+- Поиск, фильтры, задачи на сегодня
+- Статистика по задачам
+- Роли пользователей (user/admin)
+
+### Telegram Bot (UI)
+- Регистрация / вход прямо в Telegram
+- Просмотр списка задач + inline-кнопки:
+  - ✅ выполнить
+  - 🗑 удалить
+  - ✏️ редактировать
+- Создание задач пошаговым диалогом
+- Статистика и задачи на сегодня
+- Поиск по задачам
+
+---
 
 ## Технологии
-- FastAPI  
-- Python  
-- PostgreSQL (Supabase)  
-- SQLAlchemy (async)
-- APScheduler (планировщик фоновых задач)
 
-## Эндпоинты
+- FastAPI
+- PostgreSQL (Supabase)
+- SQLAlchemy (async)
+- APScheduler
+- aiogram
+- httpx
+- python-dotenv
+
+---
+
+## Архитектура
+
+- API отвечает за бизнес-логику, БД и авторизацию
+- Telegram-бот является клиентом и работает через HTTP-запросы
+- JWT используется для авторизации пользователя
+
+---
+
+## Эндпоинты API (v3)
+
+Базовый префикс: `/api/v3`
 
 ### Основные
-- `GET /` — информация о приложении  
-- `GET /health` — состояние API и БД
+- `GET /`
+- `GET /health`
 
-### Авторизация (`/api/v2/auth`)
-- `POST /auth/register` — регистрация пользователя
-- `POST /auth/login` — вход (JWT токен)
-- `PATCH /auth/change-password` — смена пароля 
-- `GET /auth/me` — текущий пользователь
+### Авторизация (`/auth`)
+- `POST /auth/register`
+- `POST /auth/login`
+- `PATCH /auth/change-password`
+- `GET /auth/me`
 
-### Администрирование (`/api/v2/auth/admin`)
-- `GET /admin/users` — список всех пользователей с количеством их задач (только для админа)
+### Задачи (`/tasks`)
+- `GET /tasks`
+- `GET /tasks/{task_id}`
+- `GET /tasks/quadrant/{quadrant}`
+- `GET /tasks/status/{status}`
+- `GET /tasks/search?q=`
+- `POST /tasks`
+- `PUT /tasks/{task_id}`
+- `PATCH /tasks/{task_id}/complete`
+- `DELETE /tasks/{task_id}`
 
-### Задачи (`/api/v2/tasks`)
-- `GET /tasks` — список задач  
-- `GET /tasks/{task_id}` — задача по ID  
-- `GET /tasks/quadrant/{quadrant}` — фильтр по Q1–Q4  
-- `GET /tasks/status/{status}` — completed / pending  
-- `GET /tasks/search?q=` — поиск
-- `GET /tasks/today` — задачи, срок которых истекает сегодня 
-- `POST /tasks` — создание (передаются важность и дедлайн, срочность и квадрант считаются автоматически)
-- `PUT /tasks/{task_id}` — обновление (при изменении важности или дедлайна пересчитываются срочность и квадрант) 
-- `PATCH /tasks/{task_id}/complete` — отметить выполненной  
-- `DELETE /tasks/{task_id}` — удалить  
+### Статистика (`/stats`)
+- `GET /stats`
+- `GET /stats/timing`
+- `GET /stats/today`
 
-### Статистика (`/api/v2/stats`)
-- `GET /stats` — общее количество, по квадрантам и по статусам
-- `GET /stats/deadlines` — невыполненные задачи с дедлайнами и количеством дней до дедлайна
-- `GET /stats/timing` — агрегированная статистика по срокам (вовремя / с опозданием / в работе / просрочены)
+---
 
+## Установка и запуск
 
-## Запуск проекта
-
-1. Установить зависимости:
+### 1. Установка зависимостей
+```bash
 pip install -r requirements.txt
+```
 
-### 2. Создать файл `.env`:
+### 2. Переменные окружения (.env)
+```env
 DATABASE_URL=postgresql+asyncpg://postgres:<password>@db.<project>.supabase.co:5432/postgres?sslmode=require
-SECRET_KEY = 'ваш_ключ'
+SECRET_KEY=your_secret_key
+BOT_TOKEN=telegram_bot_token
+API_BASE_URL=http://127.0.0.1:8000
+```
 
-### 3. Запустить сервер:
-uvicorn main:app --reload
+### 3. Запуск API и Telegram bot
+```bash
+uvicorn main:app
+```
 
-### 4. Документация:
-- Swagger UI → `/docs`  
-- ReDoc → `/redoc`
+Документация:
+- `/docs`
+- `/redoc`
 
 ## Автор
+
 Равилова Эльнара Надировна

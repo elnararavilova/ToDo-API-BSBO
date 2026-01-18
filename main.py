@@ -5,20 +5,41 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from routers import tasks, stats, auth
 from scheduler import start_scheduler
+import asyncio
+from bot import start_bot
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    
-    print("Запуск приложения...")
-    print("Инициализация базы данных...")
+
+    print("🚀 Запуск приложения...")
+    print("🗄 Инициализация базы данных...")
     await init_db()
+
+    print("⏰ Запуск планировщика...")
     scheduler = start_scheduler()
-    print("Приложение готово к работе!")
-    yield
-    print("Остановка планировщика...")
-    scheduler.shutdown()
-    print("Остановка приложения...")
+
+    print("🤖 Запуск Telegram-бота...")
+    bot_task = asyncio.create_task(start_bot())
+
+    print("✅ Приложение полностью запущено!")
+    try:
+        yield
+    finally:
+        print("🛑 Остановка приложения...")
+
+        print("⏰ Остановка планировщика...")
+        scheduler.shutdown()
+
+        print("🤖 Остановка Telegram-бота...")
+        bot_task.cancel()
+        try:
+            await bot_task
+        except asyncio.CancelledError:
+            pass
+
+        print("👋 Приложение остановлено")
+
 
 
 app = FastAPI(
